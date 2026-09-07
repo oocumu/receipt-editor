@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>영화 입장권 영수증 에디터</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root{
+    --purple: #6E56E8;
+    --purple-dark: #5A43C9;
+    --purple-tint: #F1EEFE;
+    --purple-tint-2: #E8E3FC;
+    --ink: #17172B;
+    --ink-soft: #55536C;
+    --muted: #9997AC;
+    --line: #E7E4F2;
+    --bg: #F6F5FB;
+    --panel: #FFFFFF;
+    --paper: #FEFEFC;
+    --danger: #E8544E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 8% 8%, #EDE9FB 0%, transparent 45%),
+      radial-gradient(circle at 95% 90%, #EEEAFC 0%, transparent 40%);
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--ink);
+    min-height:100vh;
+  }
+
+  .app{
+    display:grid;
+    grid-template-columns: 420px 1fr;
+    min-height:100vh;
+  }
+
+  /* ===== LEFT: EDITOR ===== */
+  .editor{
+    background: var(--panel);
+    border-right: 1px solid var(--line);
+    padding: 36px 32px 60px;
+    overflow-y: auto;
+    max-height: 100vh;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom: 6px;
+  }
+  .brand-mark{
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--purple), #9C87F5);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .brand-mark svg{ width:15px; height:15px; }
+  .brand-text{
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .editor > p.sub{
+    margin: 0 0 32px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height:1.5;
+  }
+
+  .group{
+    margin-bottom: 28px;
+  }
+  .group-title{
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--purple);
+    margin: 0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .group-title::before{
+    content:"";
+    width:5px; height:5px;
+    border-radius: 50%;
+    background: var(--purple);
+    display:inline-block;
+  }
+
+  .field{ margin-bottom: 12px; }
+  .field label{
+    display:block;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .row2{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .row3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+
+  input[type=text], input[type=number], input[type=date], input[type=time], textarea, select{
+    width:100%;
+    border: 1px solid var(--line);
+    background: #FBFAFF;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13.5px;
+    font-family: inherit;
+    color: var(--ink);
+    outline:none;
+    transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  input::placeholder, textarea::placeholder{ color: #C2C0D6; }
+  input:focus, textarea:focus, select:focus{
+    border-color: var(--purple);
+    background: #fff;
+    box-shadow: 0 0 0 3px var(--purple-tint);
+  }
+  textarea{ resize: vertical; min-height: 78px; line-height:1.5; }
+  select{ appearance:none; -webkit-appearance:none; cursor:pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0L5 6L10 0' fill='none' stroke='%239997AC' stroke-width='1.4'/></svg>");
+    background-repeat:no-repeat; background-position: right 12px center;
+    padding-right: 30px;
+  }
+
+  .divider{ height:1px; background: var(--line); margin: 28px 0; border:none; }
+
+  .actions{
+    position: sticky;
+    bottom: -60px;
+    margin-top: 8px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .btn{
+    border:none;
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor:pointer;
+    font-family:inherit;
+    transition: transform .12s ease, opacity .12s ease, background .15s ease;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn:active{ transform: scale(0.98); }
+  .btn-primary{ background: var(--purple); color:#fff; }
+  .btn-primary:hover{ background: var(--purple-dark); }
+  .btn-ghost{ background: var(--purple-tint); color: var(--purple-dark); }
+  .btn-ghost:hover{ background: var(--purple-tint-2); }
+  .btn svg{ width:15px; height:15px; }
+
+  /* ===== RIGHT: PREVIEW ===== */
+  .preview{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding: 64px 40px;
+    overflow-y:auto;
+  }
+  .preview-inner{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+    position:sticky;
+    top:64px;
+  }
+  .preview-label{
+    font-size: 12px;
+    color: var(--muted);
+    font-weight:600;
+    letter-spacing:.02em;
+  }
+
+  #receiptWrap{
+    padding: 28px 34px 34px;
+  }
+
+  .receipt{
+    width: 340px;
+    background: var(--paper);
+    font-family: 'IBM Plex Mono', 'Noto Sans KR', monospace;
+    color: #1c1c1c;
+    padding: 30px 26px 34px;
+    position:relative;
+    box-shadow: 0 24px 60px -20px rgba(90, 70, 190, 0.35), 0 4px 14px rgba(30,20,60,0.06);
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,.02));
+  }
+  .receipt::before, .receipt::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; height:11px;
+    background:
+      linear-gradient(-45deg, var(--paper) 6px, transparent 0) 0 0 / 12px 12px repeat-x,
+      linear-gradient(45deg, var(--paper) 6px, transparent 0) 0 0 / 12px 12px repeat-x;
+    filter: drop-shadow(0 0 0 var(--paper));
+  }
+  .receipt::before{ top:-10px; }
+  .receipt::after{ bottom:-10px; transform: scaleY(-1); }
+
+  .r-title{
+    text-align:center;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+  }
+  .r-meta{
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+  .r-sep{
+    border:none;
+    border-top: 1px dashed #b9b6c9;
+    margin: 12px 0;
+  }
+  .r-heavy-sep{
+    font-size: 11px;
+    letter-spacing: -1px;
+    color: #999;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 12px 0;
+    line-height:1;
+  }
+  .r-info-line{ font-size: 12.5px; margin-bottom: 3px; }
+  .r-movie-title{
+    font-size: 19px;
+    font-weight: 700;
+    margin: 10px 0 2px;
+    line-height:1.3;
+  }
+  .r-movie-en{
+    font-size: 12px;
+    color: #444;
+    margin-bottom: 10px;
+  }
+  .r-showtime{
+    display:inline-block;
+    background: #17172B;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 10px;
+    margin: 2px 0 12px;
+    letter-spacing: 0.01em;
+  }
+  .r-seat{
+    font-size: 16.5px;
+    font-weight: 600;
+    margin: 4px 0 2px;
+  }
+  .r-people{
+    font-size: 13px;
+    margin-top: 2px;
+  }
+  .r-shop{
+    font-size: 13px;
+    margin-top: 2px;
+  }
+  .r-biz{
+    font-size: 12px;
+    color: #444;
+  }
+  .r-notice{
+    font-size: 11.5px;
+    line-height: 1.75;
+    color: #2b2b2b;
+    margin-top: 10px;
+    white-space: pre-wrap;
+  }
+  .r-notice-line{ display:flex; gap: 4px; margin-bottom: 2px; }
+  .r-notice-line .mark{ flex-shrink:0; }
+
+  @media (max-width: 900px){
+    .app{ grid-template-columns: 1fr; }
+    .editor{ max-height:none; border-right:none; border-bottom: 1px solid var(--line); }
+    .preview{ padding: 40px 16px; }
+    .preview-inner{ position:static; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ EDITOR PANEL ============ -->
+  <div class="editor">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 4H20V17L12 22L4 17V4Z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="brand-text">영수증 에디터</div>
+    </div>
+    <p class="sub">영화관 입장권 영수증을 원하는 대로 꾸며보세요. 입력하는 즉시 오른쪽에 반영됩니다.</p>
+
+    <div class="group">
+      <p class="group-title">영화관 정보</p>
+      <div class="field">
+        <label>영화관 이름</label>
+        <input type="text" id="cinemaName" value="" placeholder="텍스트를 입력해 주세요.">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>지점</label>
+          <input type="text" id="branch" value="" placeholder="텍스트를 입력해 주세요.">
+        </div>
+        <div class="field">
+          <label>사업자등록번호</label>
+          <input type="text" id="bizNumber" value="" placeholder="000-00-00000">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>발권 일시</label>
+          <input type="text" id="issueLine" value="" placeholder="0000-00-00 00:00(BOX_KIOSK_0)">
+        </div>
+        <div class="field">
+          <label>발권 구분</label>
+          <input type="text" id="issueType" value="[전체발권]" placeholder="[전체발권]">
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="group">
+      <p class="group-title">영화 정보</p>
+      <div class="row2">
+        <div class="field">
+          <label>상영 방식</label>
+          <input type="text" id="screenType" value="" placeholder="2D / 3D / 4DX">
+        </div>
+        <div class="field">
+          <label>관람 등급</label>
+          <input type="text" id="rating" value="" placeholder="전체관람가 / 15세 관람가 / 청소년 관람불가">
+        </div>
+      </div>
+      <div class="field">
+        <label>영화 제목 (한글)</label>
+        <input type="text" id="movieTitleKr" value="" placeholder="영화 제목">
+      </div>
+      <div class="field">
+        <label>영화 제목 (영문/부가정보)</label>
+        <input type="text" id="movieTitleEn" value="" placeholder="영문 제목">
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="group">
+      <p class="group-title">상영 정보</p>
+      <div class="row2">
+        <div class="field">
+          <label>상영 날짜</label>
+          <input type="date" id="showDate" value="0000-00-00">
+        </div>
+        <div class="field">
+          <label>회차</label>
+          <input type="text" id="showRound" value="" placeholder="n회">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>상영 시작</label>
+          <input type="time" id="showStart" value="00:00">
+        </div>
+        <div class="field">
+          <label>상영 종료</label>
+          <input type="time" id="showEnd" value="00:00">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>상영관</label>
+          <input type="text" id="theaterNo" value="" placeholder="n관">
+        </div>
+        <div class="field">
+          <label>상영관 특징</label>
+          <input type="text" id="soundType" value="" placeholder="Laser / IMAX">
+        </div>
+      </div>
+      <div class="field">
+        <label>좌석</label>
+        <input type="text" id="seats" value="n열00번, n열00번" placeholder="좌석 구분">
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="group">
+      <p class="group-title">인원</p>
+      <div class="row2">
+        <div class="field">
+          <label>총 인원</label>
+          <input type="number" id="totalCount" value="2" min="1">
+        </div>
+        <div class="field">
+          <label>청소년 인원</label>
+          <input type="number" id="youthCount" value="0" min="0">
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="group">
+      <p class="group-title">하단 안내 문구</p>
+      <div class="field">
+        <label>줄바꿈으로 여러 줄을 구분할 수 있어요</label>
+        <textarea id="notice">티켓 미지참시 교환, 환불 불가
+결제수단 변경 및 교환, 환불은 상영시간 전 구매한 매장에서 가능
+입장지연에 따른 관람 불편 최소화를 위해 본영화는 약 10여분 후에 시작됩니다.</textarea>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="downloadBtn">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3V15M12 15L7 10M12 15L17 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 18V19C4 20.1046 4.89543 21 6 21H18C19.1046 21 20 20.1046 20 19V18" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+        이미지로 저장
+      </button>
+      <button class="btn btn-ghost" id="resetBtn">기본값으로 초기화</button>
+    </div>
+  </div>
+
+  <!-- ============ PREVIEW PANEL ============ -->
+  <div class="preview">
+    <div class="preview-inner">
+      <span class="preview-label">미리보기</span>
+      <div id="receiptWrap">
+        <div class="receipt" id="receipt">
+          <div class="r-title" id="p-cinemaName">CGV</div>
+          <div class="r-meta">
+            <div class="r-info-line"><span id="p-issueLine"></span> <span id="p-issueType"></span></div>
+          </div>
+          <div class="r-heavy-sep" id="sep1"></div>
+
+          <div class="r-info-line"><span id="p-screenType"></span>, <span id="p-rating"></span></div>
+          <div class="r-movie-title" id="p-movieTitleKr"></div>
+          <div class="r-movie-en" id="p-movieTitleEn"></div>
+          <div class="r-showtime" id="p-showtime"></div>
+          <br>
+          <div class="r-seat" id="p-seat"></div>
+          <div class="r-heavy-sep" id="sep2"></div>
+
+          <br>
+          <div class="r-people" id="p-people"></div>
+          <div class="r-shop" id="p-shop"></div>
+          <div class="r-biz" id="p-biz"></div>
+          <div class="r-heavy-sep" id="sep3"></div>
+
+          <div class="r-notice" id="p-notice"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const DEFAULTS = {
+    cinemaName: 'CGV',
+    branch: '지역',
+    bizNumber: '사업자',
+    issueLine: '0000-00-00 00:00(BOX_KIOSK_0)',
+    issueType: '[전체발권]',
+    screenType: '2D',
+    rating: '전체관람가',
+    movieTitleKr: '영화 이름',
+    movieTitleEn: '영어 영화 이름',
+    showDate: '0000-00-00',
+    showRound: '0회',
+    showStart: '00:00',
+    showEnd: '00:00',
+    theaterNo: '0관',
+    soundType: 'Laser',
+    seats: '0열00번, 0열00번',
+    totalCount: '0',
+    youthCount: '0',
+    notice: `티켓 미지참시 교환, 환불 불가
+결제수단 변경 및 교환, 환불은 상영시간 전 구매한 매장에서 가능
+입장지연에 따른 관람 불편 최소화를 위해 본영화는 약 10여분 후에 시작됩니다.`
+  };
+
+  const WEEKDAYS = ['일','월','화','수','목','금','토'];
+  const ids = Object.keys(DEFAULTS);
+
+  function fmtDate(dateStr){
+    if(!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    if(isNaN(d)) return dateStr;
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,'0');
+    const day = String(d.getDate()).padStart(2,'0');
+    const w = WEEKDAYS[d.getDay()];
+    return `${y}.${m}.${day}(${w})`;
+  }
+
+  function heavySep(){
+    return '='.repeat(50);
+  }
+
+  function render(){
+    const v = {};
+    ids.forEach(id => v[id] = document.getElementById(id).value);
+
+    document.getElementById('p-cinemaName').textContent = `${v.cinemaName}  영화입장권`;
+    document.getElementById('p-issueLine').textContent = v.issueLine;
+    document.getElementById('p-issueType').textContent = v.issueType;
+
+    document.getElementById('p-screenType').textContent = v.screenType;
+    document.getElementById('p-rating').textContent = v.rating;
+    document.getElementById('p-movieTitleKr').textContent = v.movieTitleKr;
+    document.getElementById('p-movieTitleEn').textContent = v.movieTitleEn;
+
+    const dateFmt = fmtDate(v.showDate);
+    document.getElementById('p-showtime').textContent = `${dateFmt} ${v.showRound}  ${v.showStart}~${v.showEnd}`;
+
+    document.getElementById('p-seat').textContent = `${v.theaterNo} (${v.soundType}) ${v.seats}`;
+
+    document.getElementById('p-people').textContent = `총인원 ${v.totalCount}명 (청소년 ${v.youthCount}명)`;
+    document.getElementById('p-shop').textContent = `${v.cinemaName} ${v.branch}`;
+    document.getElementById('p-biz').textContent = `[${v.bizNumber}]`;
+
+    const noticeWrap = document.getElementById('p-notice');
+    noticeWrap.innerHTML = '';
+    v.notice.split('\n').filter(l => l.trim().length).forEach(line => {
+      const row = document.createElement('div');
+      row.className = 'r-notice-line';
+      row.innerHTML = `<span class="mark">*</span><span>${line}</span>`;
+      noticeWrap.appendChild(row);
+    });
+
+    const s = heavySep();
+    document.getElementById('sep1').textContent = s;
+    document.getElementById('sep2').textContent = s;
+    document.getElementById('sep3').textContent = s;
+  }
+
+  ids.forEach(id => {
+    document.getElementById(id).addEventListener('input', render);
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    ids.forEach(id => { document.getElementById(id).value = DEFAULTS[id]; });
+    render();
+  });
+
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    const target = document.getElementById('receiptWrap');
+    const btn = document.getElementById('downloadBtn');
+    const original = btn.innerHTML;
+    btn.innerHTML = '저장 중...';
+    btn.disabled = true;
+    html2canvas(target, { backgroundColor: null, scale: 3 }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = 'movie-receipt.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      btn.innerHTML = original;
+      btn.disabled = false;
+    }).catch(() => {
+      btn.innerHTML = original;
+      btn.disabled = false;
+      alert('이미지 저장에 실패했어요. 다시 시도해 주세요.');
+    });
+  });
+
+  render();
+</script>
+
+</body>
+</html>
