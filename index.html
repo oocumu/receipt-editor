@@ -302,18 +302,18 @@
       </div>
       <div class="brand-text">영수증 에디터</div>
     </div>
-    <p class="sub">영화관 입장권 영수증을 원하는 대로 꾸며보세요. 입력하는 즉시 오른쪽에 반영됩니다.</p>
+    <p class="sub">영화관 입장권 영수증을 원하는 대로 꾸며보세요. 입력하는 즉시 오른쪽에 반영돼요.</p>
 
     <div class="group">
       <p class="group-title">영화관 정보</p>
       <div class="field">
         <label>영화관 이름</label>
-        <input type="text" id="cinemaName" value="" placeholder="텍스트를 입력해 주세요.">
+        <input type="text" id="cinemaName" value="" placeholder="텍스트를 입력해주세요">
       </div>
       <div class="row2">
         <div class="field">
           <label>지점</label>
-          <input type="text" id="branch" value="" placeholder="텍스트를 입력해 주세요.">
+          <input type="text" id="branch" value="" placeholder="텍스트를 입력해주세요">
         </div>
         <div class="field">
           <label>사업자등록번호</label>
@@ -327,7 +327,7 @@
         </div>
         <div class="field">
           <label>발권 구분</label>
-          <input type="text" id="issueType" value="[전체발권]" placeholder="[전체발권]">
+          <input type="text" id="issueType" value="" placeholder="텍스트를 입력해주세요">
         </div>
       </div>
     </div>
@@ -339,20 +339,20 @@
       <div class="row2">
         <div class="field">
           <label>상영 방식</label>
-          <input type="text" id="screenType" value="" placeholder="2D / 3D / 4DX">
+          <input type="text" id="screenType" value="" placeholder="텍스트를 입력해주세요">
         </div>
         <div class="field">
           <label>관람 등급</label>
-          <input type="text" id="rating" value="" placeholder="전체관람가 / 15세 관람가 / 청소년 관람불가">
+          <input type="text" id="rating" value="" placeholder="텍스트를 입력해주세요">
         </div>
       </div>
       <div class="field">
         <label>영화 제목 (한글)</label>
-        <input type="text" id="movieTitleKr" value="" placeholder="영화 제목">
+        <input type="text" id="movieTitleKr" value="" placeholder="텍스트를 입력해주세요">
       </div>
       <div class="field">
         <label>영화 제목 (영문/부가정보)</label>
-        <input type="text" id="movieTitleEn" value="" placeholder="영문 제목">
+        <input type="text" id="movieTitleEn" value="" placeholder="텍스트를 입력해주세요">
       </div>
     </div>
 
@@ -363,36 +363,36 @@
       <div class="row2">
         <div class="field">
           <label>상영 날짜</label>
-          <input type="date" id="showDate" value="0000-00-00">
+          <input type="date" id="showDate" value="">
         </div>
         <div class="field">
           <label>회차</label>
-          <input type="text" id="showRound" value="" placeholder="n회">
+          <input type="text" id="showRound" value="" placeholder="N회">
         </div>
       </div>
       <div class="row2">
         <div class="field">
           <label>상영 시작</label>
-          <input type="time" id="showStart" value="00:00">
+          <input type="time" id="showStart" value="">
         </div>
         <div class="field">
           <label>상영 종료</label>
-          <input type="time" id="showEnd" value="00:00">
+          <input type="time" id="showEnd" value="">
         </div>
       </div>
       <div class="row2">
         <div class="field">
           <label>상영관</label>
-          <input type="text" id="theaterNo" value="" placeholder="n관">
+          <input type="text" id="theaterNo" value="" placeholder="N관">
         </div>
         <div class="field">
           <label>상영관 특징</label>
-          <input type="text" id="soundType" value="" placeholder="Laser / IMAX">
+          <input type="text" id="soundType" value="" placeholder="텍스트를 입력해주세요">
         </div>
       </div>
       <div class="field">
         <label>좌석</label>
-        <input type="text" id="seats" value="n열00번, n열00번" placeholder="좌석 구분">
+        <input type="text" id="seats" value="" placeholder="N열 0번">
       </div>
     </div>
 
@@ -403,11 +403,11 @@
       <div class="row2">
         <div class="field">
           <label>총 인원</label>
-          <input type="number" id="totalCount" value="2" min="1">
+          <input type="number" id="totalCount" value="" placeholder="0" min="1">
         </div>
         <div class="field">
           <label>청소년 인원</label>
-          <input type="number" id="youthCount" value="0" min="0">
+          <input type="number" id="youthCount" value="" placeholder="0" min="0">
         </div>
       </div>
     </div>
@@ -417,9 +417,8 @@
     <div class="group">
       <p class="group-title">하단 안내 문구</p>
       <div class="field">
-        <label>줄바꿈으로 여러 줄을 구분할 수 있습니다.</label>
-        <textarea id="notice">페어의 한마디나
-영화 후기도 적으면 좋을 것 같아요!</textarea>
+        <label>줄바꿈으로 여러 줄을 구분할 수 있어요</label>
+        <textarea id="notice" placeholder="텍스트를 입력해주세요"></textarea>
       </div>
     </div>
 
@@ -438,13 +437,13 @@
       <span class="preview-label">미리보기</span>
       <div id="receiptWrap">
         <div class="receipt" id="receipt">
-          <div class="r-title" id="p-cinemaName">CGV</div>
+          <div class="r-title" id="p-cinemaName">영화입장권</div>
           <div class="r-meta">
-            <div class="r-info-line"><span id="p-issueLine"></span> <span id="p-issueType"></span></div>
+            <div class="r-info-line" id="p-issueRow"></div>
           </div>
           <div class="r-heavy-sep" id="sep1"></div>
 
-          <div class="r-info-line"><span id="p-screenType"></span>, <span id="p-rating"></span></div>
+          <div class="r-info-line" id="p-formatRow"></div>
           <div class="r-movie-title" id="p-movieTitleKr"></div>
           <div class="r-movie-en" id="p-movieTitleEn"></div>
           <div class="r-showtime" id="p-showtime"></div>
@@ -468,27 +467,25 @@
 
 <script>
   const DEFAULTS = {
-    cinemaName: 'CGV',
-    branch: '지역',
-    bizNumber: '사업자',
-    issueLine: '0000-00-00 00:00(BOX_KIOSK_0)',
-    issueType: '[전체발권]',
-    screenType: '2D',
-    rating: '전체관람가',
-    movieTitleKr: '영화 이름',
-    movieTitleEn: '영어 영화 이름',
-    showDate: '0000-00-00',
-    showRound: '0회',
-    showStart: '00:00',
-    showEnd: '00:00',
-    theaterNo: '0관',
-    soundType: 'Laser',
-    seats: '0열00번, 0열00번',
-    totalCount: '0',
-    youthCount: '0',
-    notice: `티켓 미지참시 교환, 환불 불가
-결제수단 변경 및 교환, 환불은 상영시간 전 구매한 매장에서 가능
-입장지연에 따른 관람 불편 최소화를 위해 본영화는 약 10여분 후에 시작됩니다.`
+    cinemaName: '',
+    branch: '',
+    bizNumber: '',
+    issueLine: '',
+    issueType: '',
+    screenType: '',
+    rating: '',
+    movieTitleKr: '',
+    movieTitleEn: '',
+    showDate: '',
+    showRound: '',
+    showStart: '',
+    showEnd: '',
+    theaterNo: '',
+    soundType: '',
+    seats: '',
+    totalCount: '',
+    youthCount: '',
+    notice: ''
   };
 
   const WEEKDAYS = ['일','월','화','수','목','금','토'];
@@ -509,36 +506,83 @@
     return '='.repeat(50);
   }
 
+  function setLine(el, text){
+    if(text && text.trim().length){
+      el.textContent = text;
+      el.style.display = '';
+    } else {
+      el.textContent = '';
+      el.style.display = 'none';
+    }
+  }
+
   function render(){
     const v = {};
-    ids.forEach(id => v[id] = document.getElementById(id).value);
+    ids.forEach(id => v[id] = document.getElementById(id).value.trim());
 
-    document.getElementById('p-cinemaName').textContent = `${v.cinemaName}  영화입장권`;
-    document.getElementById('p-issueLine').textContent = v.issueLine;
-    document.getElementById('p-issueType').textContent = v.issueType;
+    // 상단 타이틀 (영화관 이름)
+    document.getElementById('p-cinemaName').textContent = v.cinemaName ? `${v.cinemaName}  영화입장권` : '영화입장권';
 
-    document.getElementById('p-screenType').textContent = v.screenType;
-    document.getElementById('p-rating').textContent = v.rating;
-    document.getElementById('p-movieTitleKr').textContent = v.movieTitleKr;
-    document.getElementById('p-movieTitleEn').textContent = v.movieTitleEn;
+    // 발권 정보 줄
+    const issueParts = [v.issueLine, v.issueType].filter(Boolean);
+    setLine(document.getElementById('p-issueRow'), issueParts.join(' '));
 
+    // 상영방식, 등급
+    const formatParts = [v.screenType, v.rating].filter(Boolean);
+    setLine(document.getElementById('p-formatRow'), formatParts.join(', '));
+
+    // 영화 제목
+    setLine(document.getElementById('p-movieTitleKr'), v.movieTitleKr);
+    setLine(document.getElementById('p-movieTitleEn'), v.movieTitleEn);
+
+    // 상영 시간
     const dateFmt = fmtDate(v.showDate);
-    document.getElementById('p-showtime').textContent = `${dateFmt} ${v.showRound}  ${v.showStart}~${v.showEnd}`;
+    let timeStr = '';
+    if(v.showStart && v.showEnd) timeStr = `${v.showStart}~${v.showEnd}`;
+    else if(v.showStart) timeStr = v.showStart;
+    else if(v.showEnd) timeStr = v.showEnd;
+    const showtimeParts = [dateFmt, v.showRound, timeStr].filter(Boolean);
+    setLine(document.getElementById('p-showtime'), showtimeParts.join('  '));
 
-    document.getElementById('p-seat').textContent = `${v.theaterNo} (${v.soundType}) ${v.seats}`;
+    // 상영관 / 좌석
+    let seatHead = '';
+    if(v.theaterNo && v.soundType) seatHead = `${v.theaterNo} (${v.soundType})`;
+    else if(v.theaterNo) seatHead = v.theaterNo;
+    else if(v.soundType) seatHead = `(${v.soundType})`;
+    const seatParts = [seatHead, v.seats].filter(Boolean);
+    setLine(document.getElementById('p-seat'), seatParts.join(' '));
 
-    document.getElementById('p-people').textContent = `총인원 ${v.totalCount}명 (청소년 ${v.youthCount}명)`;
-    document.getElementById('p-shop').textContent = `${v.cinemaName} ${v.branch}`;
-    document.getElementById('p-biz').textContent = `[${v.bizNumber}]`;
+    // 인원 - 총인원 안에서 청소년/일반 인원을 함께 표기
+    let peopleText = '';
+    if(v.totalCount){
+      const total = Number(v.totalCount);
+      const youth = v.youthCount ? Number(v.youthCount) : 0;
+      const general = Math.max(total - youth, 0);
+      const breakdown = [];
+      if(youth > 0) breakdown.push(`청소년 ${youth}명`);
+      if(general > 0) breakdown.push(`일반 ${general}명`);
+      peopleText = breakdown.length
+        ? `총인원 ${total}명 (${breakdown.join(', ')})`
+        : `총인원 ${total}명`;
+    }
+    setLine(document.getElementById('p-people'), peopleText);
 
+    // 매장 / 사업자번호
+    const shopParts = [v.cinemaName, v.branch].filter(Boolean);
+    setLine(document.getElementById('p-shop'), shopParts.join(' '));
+    setLine(document.getElementById('p-biz'), v.bizNumber ? `[${v.bizNumber}]` : '');
+
+    // 안내 문구
     const noticeWrap = document.getElementById('p-notice');
     noticeWrap.innerHTML = '';
-    v.notice.split('\n').filter(l => l.trim().length).forEach(line => {
+    const noticeLines = v.notice.split('\n').filter(l => l.trim().length);
+    noticeLines.forEach(line => {
       const row = document.createElement('div');
       row.className = 'r-notice-line';
       row.innerHTML = `<span class="mark">*</span><span>${line}</span>`;
       noticeWrap.appendChild(row);
     });
+    noticeWrap.style.display = noticeLines.length ? '' : 'none';
 
     const s = heavySep();
     document.getElementById('sep1').textContent = s;
