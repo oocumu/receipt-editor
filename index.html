@@ -131,6 +131,38 @@
     padding-right: 30px;
   }
 
+  .seg{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    background: #FBFAFF;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 4px;
+  }
+  .seg label{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding: 9px 10px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor:pointer;
+    transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+    user-select:none;
+  }
+  .seg input{ display:none; }
+  .seg label svg{ width:26px; height:12px; flex-shrink:0; }
+  .seg input:checked + span,
+  .seg label:has(input:checked){
+    background: #fff;
+    color: var(--purple-dark);
+    box-shadow: 0 2px 8px rgba(90,70,190,0.14);
+  }
+
   .divider{ height:1px; background: var(--line); margin: 28px 0; border:none; }
 
   .actions{
@@ -196,7 +228,7 @@
     box-shadow: 0 24px 60px -20px rgba(90, 70, 190, 0.35), 0 4px 14px rgba(30,20,60,0.06);
     filter: drop-shadow(0 1px 0 rgba(0,0,0,.02));
   }
-  .receipt::before, .receipt::after{
+  .receipt.edge-zigzag::before, .receipt.edge-zigzag::after{
     content:"";
     position:absolute;
     left:0; right:0; height:11px;
@@ -205,8 +237,12 @@
       linear-gradient(45deg, var(--paper) 6px, transparent 0) 0 0 / 12px 12px repeat-x;
     filter: drop-shadow(0 0 0 var(--paper));
   }
-  .receipt::before{ top:-10px; }
-  .receipt::after{ bottom:-10px; transform: scaleY(-1); }
+  .receipt.edge-zigzag::before{ top:-10px; }
+  .receipt.edge-zigzag::after{ bottom:-10px; transform: scaleY(-1); }
+
+  .receipt.edge-straight{
+    box-shadow: 0 24px 60px -20px rgba(90, 70, 190, 0.35), 0 4px 14px rgba(30,20,60,0.06);
+  }
 
   .r-title{
     text-align:center;
@@ -303,6 +339,19 @@
       <div class="brand-text">영수증 에디터</div>
     </div>
     <p class="sub">영화관 입장권 영수증을 원하는 대로 꾸며보세요. 입력하는 즉시 오른쪽에 반영돼요.</p>
+
+    <div class="group">
+      <p class="group-title">영수증 모양</p>
+      <div class="field">
+        <label>위/아래 가장자리 스타일</label>
+        <div class="seg">
+          <label><input type="radio" name="edgeStyle" id="edgeZigzag" value="zigzag" checked><span>지그재그</span></label>
+          <label><input type="radio" name="edgeStyle" id="edgeStraight" value="straight"><span>일자</span></label>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
 
     <div class="group">
       <p class="group-title">영화관 정보</p>
@@ -436,7 +485,7 @@
     <div class="preview-inner">
       <span class="preview-label">미리보기</span>
       <div id="receiptWrap">
-        <div class="receipt" id="receipt">
+        <div class="receipt edge-zigzag" id="receipt">
           <div class="r-title" id="p-cinemaName">영화입장권</div>
           <div class="r-meta">
             <div class="r-info-line" id="p-issueRow"></div>
@@ -487,6 +536,7 @@
     youthCount: '',
     notice: ''
   };
+  const DEFAULT_EDGE = 'zigzag';
 
   const WEEKDAYS = ['일','월','화','수','목','금','토'];
   const ids = Object.keys(DEFAULTS);
@@ -514,6 +564,13 @@
       el.textContent = '';
       el.style.display = 'none';
     }
+  }
+
+  function applyEdgeStyle(){
+    const edge = document.querySelector('input[name="edgeStyle"]:checked').value;
+    const receiptEl = document.getElementById('receipt');
+    receiptEl.classList.remove('edge-zigzag', 'edge-straight');
+    receiptEl.classList.add(edge === 'straight' ? 'edge-straight' : 'edge-zigzag');
   }
 
   function render(){
@@ -594,8 +651,14 @@
     document.getElementById(id).addEventListener('input', render);
   });
 
+  document.querySelectorAll('input[name="edgeStyle"]').forEach(el => {
+    el.addEventListener('change', applyEdgeStyle);
+  });
+
   document.getElementById('resetBtn').addEventListener('click', () => {
     ids.forEach(id => { document.getElementById(id).value = DEFAULTS[id]; });
+    document.getElementById('edgeZigzag').checked = true;
+    applyEdgeStyle();
     render();
   });
 
@@ -619,6 +682,7 @@
     });
   });
 
+  applyEdgeStyle();
   render();
 </script>
 
