@@ -153,10 +153,10 @@
     cursor:pointer;
     transition: background .15s ease, color .15s ease, box-shadow .15s ease;
     user-select:none;
+    -webkit-tap-highlight-color: transparent;
   }
   .seg input{ display:none; }
   .seg label svg{ width:26px; height:12px; flex-shrink:0; }
-  .seg input:checked + span,
   .seg label:has(input:checked){
     background: #fff;
     color: var(--purple-dark);
