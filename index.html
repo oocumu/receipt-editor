@@ -34,6 +34,74 @@
     color: var(--ink);
     min-height:100vh;
   }
+  body.notice-active{
+    overflow:hidden;
+  }
+
+  /* ===== NOTICE MODAL ===== */
+  .notice-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(23, 23, 43, 0.55);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index: 1000;
+    padding: 20px;
+    opacity: 1;
+    transition: opacity .18s ease;
+  }
+  .notice-overlay.hidden{
+    opacity: 0;
+    pointer-events: none;
+  }
+  .notice-box{
+    background: var(--panel);
+    width: 100%;
+    max-width: 380px;
+    border-radius: 16px;
+    padding: 26px 24px 20px;
+    box-shadow: 0 30px 70px -20px rgba(23,23,43,0.45), 0 4px 14px rgba(30,20,60,0.08);
+    animation: notice-pop .18s ease;
+  }
+  @keyframes notice-pop{
+    from{ transform: translateY(6px) scale(.98); opacity:0; }
+    to{ transform: translateY(0) scale(1); opacity:1; }
+  }
+  .notice-title{
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--purple-dark);
+    margin-bottom: 12px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .notice-title::before{
+    content:"";
+    width:6px; height:6px;
+    border-radius: 50%;
+    background: var(--purple);
+    display:inline-block;
+  }
+  .notice-body{
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+    margin-bottom: 20px;
+  }
+  .notice-actions{
+    display:flex;
+    justify-content:flex-end;
+  }
+  .notice-actions .btn{
+    padding: 9px 20px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
 
   .app{
     display:grid;
@@ -326,8 +394,7 @@
   }
 </style>
 </head>
-<body>
-  <body class="notice-active">
+<body class="notice-active">
 
 <!-- NOTICE MODAL -->
 <div class="notice-overlay" id="noticeOverlay">
@@ -697,6 +764,12 @@
       btn.disabled = false;
       alert('이미지 저장에 실패했어요. 다시 시도해 주세요.');
     });
+  });
+
+  // 공지사항 모달 닫기
+  document.getElementById('noticeConfirmBtn').addEventListener('click', () => {
+    document.getElementById('noticeOverlay').classList.add('hidden');
+    document.body.classList.remove('notice-active');
   });
 
   applyEdgeStyle();
